@@ -1,0 +1,100 @@
+<div class="container">
+  <div class="d-flex gap-2 mb-2">
+    <input
+      type="text"
+      placeholder="Search by title..."
+      [(ngModel)]="searchText"
+      (input)="applyFilter()"
+    />
+    <button class="btn btn-sm btn-primary" (click)="clearFilter()">
+      Clear
+    </button>
+  </div>
+
+  <ngx-datatable
+    class="material"
+    [rows]="movieService.movieList"
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    (activate)="selectMovie($event, $event.row)"
+    [limit]="8"
+  >
+    <ngx-datatable-column name="Title">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Title
+      </ng-template>
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.title }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Cast Members">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Cast Members
+      </ng-template>
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.cast.join(", ") }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Release Date">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Release Date
+      </ng-template>
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.releaseDate | date }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Actions">
+      <ng-template let-column="column" ngx-datatable-header-template>
+        Actions
+      </ng-template>
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <div class="d-flex gap-2">
+          <a type="button" (click)="likeMovie(row)">
+            {{ row.liked ? "👎" : "👍" }}
+          </a>
+          <star-rating
+            [starType]="'svg'"
+            [rating]="row.rating"
+            (ratingChange)="rateMovie($event, row)"
+          ></star-rating>
+        </div>
+        <div class="d-flex flex-column my-2 gap-2">
+          <input type="text" placeholder="Add a comment..." #commentInput />
+          <button
+            class="btn btn-sm btn-primary"
+            (click)="addComment(row, commentInput.value)"
+          >
+            Add Comment
+          </button>
+        </div>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+
+  @if (selectedMovie) {
+  <div class="card my-2" #movieDetail>
+    <div class="card-body">
+      <h3>Selected Movie Details</h3>
+      <p><b>Title:</b> {{ selectedMovie.title }}</p>
+      <p><b>Cast Members:</b> {{ selectedMovie.cast.join(", ") }}</p>
+      <p><b>Release Date:</b> {{ selectedMovie.releaseDate | date }}</p>
+      <p><b>Liked:</b> {{ selectedMovie.liked ? "Yes" : "No" }}</p>
+      <p><b>Rating:</b> {{ selectedMovie.rating }}</p>
+      <p><b>Comments:</b></p>
+      <ul>
+        @for (comment of selectedMovie.comments; track $index) {
+
+        <li>
+          {{ comment }}
+        </li>
+        }
+      </ul>
+    </div>
+  </div>
+  }
+</div>

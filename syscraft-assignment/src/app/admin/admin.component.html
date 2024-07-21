@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <form [formGroup]="movieForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label">Title</label>
+          <input
+            type="text"
+            formControlName="title"
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': f['title'].touched && f['title'].errors
+            }"
+          />
+          <div
+            *ngIf="f['title'].touched && f['title'].errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f['title'].errors['required']">title is required</div>
+          </div>
+        </div>
+        <div class="mb-3" formArrayName="cast">
+          <label class="form-label mb-0">Cast</label>
+          @for (item of formArray.controls; track $index) {
+          <input type="text" class="form-control mt-2" [formControlName]="$index" />
+          }
+          <button
+            class="btn btn-sm btn-secondary mt-2"
+            type="button"
+            (click)="addItem()"
+          >
+            Add Cast
+          </button>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Release Date</label>
+          <input
+            type="date"
+            formControlName="releaseDate"
+            class="form-control"
+            [ngClass]="{
+              'is-invalid': f['releaseDate'].touched && f['releaseDate'].errors
+            }"
+          />
+          <div
+            *ngIf="f['releaseDate'].touched && f['releaseDate'].errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f['releaseDate'].errors['required']">
+              date is required
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="publishMovie"
+              formControlName="publishMovie"
+            />
+            <label class="form-check-label" for="publishMovie">
+              Publish Movie
+            </label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="publishReview"
+              formControlName="publishReview"
+            />
+            <label class="form-check-label" for="publishReview">
+              Publish Review
+            </label>
+          </div>
+        </div>
+        <button [disabled]="movieForm.invalid" class="btn btn-primary">
+          Submit
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
